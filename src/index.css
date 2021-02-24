@@ -1,0 +1,31 @@
+html {
+  box-sizing: border-box;
+  font-family: "Roboto Mono", monospace;
+  font-weight: 400;
+  height: 100%;
+}
+
+body {
+  display: flex;
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  display: flex;
+  flex: 1;
+}
+
+main {
+  display: flex;
+  flex: 1;
+}
