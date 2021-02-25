@@ -28,7 +28,7 @@ export default function Login() {
   // TEST PURPOSE ! REMOVE THIS !
   useEffect(() => {
     auth.login("pierre", "123").then(() => {
-      history.replace("/");
+      history.replace(from);
     });
   }, []);
 
