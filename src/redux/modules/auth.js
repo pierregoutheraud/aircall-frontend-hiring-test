@@ -25,14 +25,14 @@ export default function (state = initialState, action) {
   switch (type) {
     case LOGIN_SUCCESS:
       return {
-        ...auth,
+        ...state,
         isAuthenticated: true,
         user,
         accessToken,
       };
     case LOGIN_FAILURE:
       return {
-        ...auth,
+        ...state,
         isAuthenticated: false,
         user: null,
         accessToken: null,

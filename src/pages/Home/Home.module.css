@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.calls {
+  display: flex;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+}
+
+.call {
+  margin-bottom: 20px;
+}
