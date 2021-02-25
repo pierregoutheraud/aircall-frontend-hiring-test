@@ -1,0 +1,9 @@
+.container {
+  display: flex;
+  align-items: center;
+  padding: 30px;
+}
+
+.page {
+  margin: 0 10px;
+}
