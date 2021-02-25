@@ -10,18 +10,20 @@ export const listenToCalls = () => async dispatch => {
   // LISTEN TO PUSHER UPDATES HERE
 };
 
-const fetchDisplayPage = newOffset => async (dispatch, getState) => {
+export const fetchDisplayPage = newOffset => async (dispatch, getState) => {
   const {
     calls: { limit },
   } = getState();
-
-  try {
-    const data = await api.get(`/calls?offset=${newOffset}&limit=${limit}`);
-    const { nodes: list, totalCount } = data;
-    dispatch({ type: FETCH_DISPLAY_PAGE, offset: newOffset, list, totalCount });
-  } catch (e) {
-    console.log(e);
-  }
+  return dispatch({
+    useApi: true,
+    type: FETCH_DISPLAY_PAGE,
+    method: "GET",
+    endpoint: `/calls?offset=${newOffset}&limit=${limit}`,
+    onSuccess: async data => {
+      const { nodes: list, totalCount } = data;
+      return { list, totalCount, offset: newOffset };
+    },
+  });
 };
 
 export const displayPrevPage = () => (dispatch, getState) => {
@@ -75,6 +77,7 @@ const initialState = {
   offset: 0,
   limit: DEFAULT_LIMIT,
   totalCount: 0,
+  loading: false,
 };
 
 export default function (state = initialState, action) {
@@ -86,6 +89,7 @@ export default function (state = initialState, action) {
         ...state,
         offset,
       };
+    case FETCH_DISPLAY_PAGE + "_SUCCESS":
     case FETCH_DISPLAY_PAGE:
       const newList = [...state.list];
 
