@@ -1,46 +1,118 @@
-import React, { useEffect } from "react";
+import React from "react";
+import cx from "classnames";
 import {
   IconButton,
-  CircledLeftOutlined,
-  CircledRightOutlined,
-  Typography,
+  ArrowSendOutlined,
+  Spacer,
+  Button,
 } from "@aircall/tractor";
 import styles from "./PaginationNav.module.css";
 
 export default function PaginationNav({
-  offset,
-  limit,
-  totalCount,
-  onPrev = () => {},
-  onNext = () => {},
+  page = 1,
+  maxPage = 1,
+  disabled = false,
+  onPage = () => {},
 }) {
-  const currentPage = Math.floor(offset / limit) + 1;
-  const maxPage = Math.ceil(totalCount / limit);
-  const hasPrevPage = currentPage > 1;
-  const hasNextPage = currentPage < maxPage;
+  const hasPrevPage = page > 1;
+  const hasNextPage = page < maxPage;
 
   const colorActive = "primary.base";
   const colorNotActive = "grey.light";
 
+  function renderButtons() {
+    const buttons = [-2, -1, 0, 1, 2].map((v, i) => {
+      const _page = page + v;
+
+      if (_page < 1 || _page > maxPage) {
+        return (
+          <Button
+            key={_page}
+            size="small"
+            width="50px"
+            style={{ visibility: "hidden" }}
+          ></Button>
+        );
+      }
+
+      const isCurrent = _page === page;
+
+      return (
+        <Button
+          key={_page}
+          mode={isCurrent ? "fill" : "outline"}
+          size="small"
+          variant={isCurrent ? "primary" : "darkGhost"}
+          onClick={isCurrent ? () => {} : () => onPage(_page)}
+          width="50px"
+        >
+          {_page}
+        </Button>
+      );
+    });
+    /*
+      .reduce((acc, curr, i, arr) => {
+        if (i === 0 && page > 3) {
+          acc = [
+            <Button
+              key={1}
+              mode="outline"
+              size="small"
+              variant="darkGhost"
+              onClick={() => onPage(1)}
+              width="50px"
+            >
+              {1}
+            </Button>,
+            <p>...</p>,
+          ];
+        }
+
+        acc.push(curr);
+
+        if (i === arr.length - 1 && page < maxPage - 2) {
+          acc = [
+            ...acc,
+            <p>...</p>,
+            <Button
+              key={maxPage}
+              mode="outline"
+              size="small"
+              variant="darkGhost"
+              onClick={() => onPage(maxPage)}
+              width="50px"
+            >
+              {maxPage}
+            </Button>,
+          ];
+        }
+
+        return acc;
+      }, []);
+      */
+
+    return buttons;
+  }
+
   return (
-    <div className={styles.container}>
+    <Spacer alignItems="center" space="xxs">
       <IconButton
-        onClick={onPrev}
+        className={cx(styles.arrow, styles.reverse)}
+        onClick={() => onPage(page - 1)}
         size={36}
-        component={CircledLeftOutlined}
+        component={ArrowSendOutlined}
         color={hasPrevPage ? colorActive : colorNotActive}
-        disabled={!hasPrevPage}
+        disabled={disabled || !hasPrevPage}
       />
-      <Typography className={styles.page} variant="subheading2">
-        {currentPage}
-      </Typography>
+      {renderButtons()}
       <IconButton
-        onClick={onNext}
+        className={styles.arrow}
+        onClick={() => onPage(page + 1)}
         size={36}
-        component={CircledRightOutlined}
+        component={ArrowSendOutlined}
         color={hasNextPage ? colorActive : colorNotActive}
-        disabled={!hasNextPage}
+        disabled={disabled || !hasNextPage}
       />
-    </div>
+    </Spacer>
   );
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Tractor, Spacer, Typography } from "@aircall/tractor";
+import { Tractor } from "@aircall/tractor";
 import store from "./redux/store";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import Home from "./pages/Home/Home";

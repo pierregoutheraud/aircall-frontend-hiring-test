@@ -1,3 +1,8 @@
+:root {
+  --primaryBase: #00b388;
+  --greyBase: #d9d9d5;
+}
+
 html {
   box-sizing: border-box;
   font-family: "Roboto Mono", monospace;

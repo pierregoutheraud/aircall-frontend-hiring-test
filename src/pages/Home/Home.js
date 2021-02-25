@@ -13,9 +13,7 @@ export default function Home() {
   const { list, totalCount, offset, limit, loading } = useCalls(page);
 
   function goToPage(newPage) {
-    return function () {
-      history.push(`/${newPage}`);
-    };
+    history.push(`/${Math.max(newPage, 1)}`);
   }
 
   const _list = list.map(call => {
@@ -29,11 +27,10 @@ export default function Home() {
         {_list}
       </div>
       <PaginationNav
-        offset={offset}
-        limit={limit}
-        totalCount={totalCount}
-        onPrev={goToPage(page - 1)}
-        onNext={goToPage(page + 1)}
+        page={page}
+        maxPage={Math.ceil(totalCount / limit)}
+        onPage={goToPage}
+        disabled={loading}
       />
     </main>
   );
