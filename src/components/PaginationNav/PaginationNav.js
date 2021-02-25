@@ -9,6 +9,7 @@ import {
 import styles from "./PaginationNav.module.css";
 
 export default function PaginationNav({
+  className = undefined,
   page = 1,
   maxPage = 1,
   disabled = false,
@@ -95,7 +96,12 @@ export default function PaginationNav({
   }
 
   return (
-    <Spacer alignItems="center" space="xxs">
+    <Spacer
+      className={className}
+      alignItems="center"
+      justifyContent="center"
+      space="xxs"
+    >
       <IconButton
         className={cx(styles.arrow, styles.reverse)}
         onClick={() => onPage(page - 1)}

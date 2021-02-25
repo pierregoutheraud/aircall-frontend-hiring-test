@@ -10,9 +10,10 @@ export default function Home() {
   const history = useHistory();
   const page = parseInt(useParams().page || 1);
 
-  const { list, totalCount, offset, limit, loading } = useCalls(page);
+  const { list, totalCount, limit, loading } = useCalls(page);
 
   function goToPage(newPage) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     history.push(`/${Math.max(newPage, 1)}`);
   }
 
@@ -22,11 +23,10 @@ export default function Home() {
 
   return (
     <main className={styles.container}>
-      <div className={styles.calls}>
-        {loading ? <Loading /> : null}
-        {_list}
-      </div>
+      {loading ? <Loading className={styles.loading} /> : null}
+      <div className={styles.calls}>{_list}</div>
       <PaginationNav
+        className={styles.nav}
         page={page}
         maxPage={Math.ceil(totalCount / limit)}
         onPage={goToPage}

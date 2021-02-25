@@ -1,8 +1,21 @@
 .container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
+
+.loading {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .calls {
   position: relative;
   display: flex;
@@ -10,9 +23,18 @@
   min-height: 800px;
   display: flex;
   flex-direction: column;
-  padding: 40px;
+  padding: 40px 40px 200px 40px;
 }
 
 .call {
   margin-bottom: 20px;
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 50px 0;
+  background: rgba(255, 255, 255, 0.98);
 }

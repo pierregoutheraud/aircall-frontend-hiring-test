@@ -2,7 +2,7 @@ import { partOfArrayNotUndefined } from "../../lib/utils";
 
 export const FETCH_DISPLAY_PAGE = "FETCH_DISPLAY_PAGE";
 export const DISPLAY_PAGE = "DISPLAY_PAGE";
-export const DEFAULT_LIMIT = 5;
+export const DEFAULT_LIMIT = 20;
 
 export const fetchDisplayPage = newOffset => async (dispatch, getState) => {
   const {
