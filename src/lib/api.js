@@ -47,11 +47,21 @@ class API {
 
     try {
       const data = await res.json();
-      if (data.error) {
-        throw new Error(
-          Array.isArray(data.message) ? data.message[0] : data.message
-        );
+
+      if (![200, 201].includes(res.status)) {
+        if (data.error) {
+          throw new Error(
+            Array.isArray(data.message) ? data.message[0] : data.message
+          );
+        }
+
+        if (data.message) {
+          throw new Error(data.message);
+        }
+
+        throw new Error("An error occurred.");
       }
+
       return data;
     } catch (e) {
       throw new Error("An error occurred.");
