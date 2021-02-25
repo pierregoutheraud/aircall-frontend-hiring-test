@@ -4,8 +4,10 @@
   align-items: center;
 }
 .calls {
+  position: relative;
   display: flex;
   max-width: 1000px;
+  min-height: 800px;
   display: flex;
   flex-direction: column;
   padding: 40px;

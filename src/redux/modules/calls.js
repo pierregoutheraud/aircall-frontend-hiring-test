@@ -83,7 +83,7 @@ const initialState = {
 };
 
 export default function (state = initialState, action) {
-  const { type, offset, list, totalCount } = action;
+  const { type, offset, list, totalCount, loading } = action;
 
   switch (type) {
     case DISPLAY_PAGE:
@@ -91,8 +91,12 @@ export default function (state = initialState, action) {
         ...state,
         offset,
       };
+    case FETCH_DISPLAY_PAGE + "_REQUEST":
+      return {
+        ...state,
+        loading,
+      };
     case FETCH_DISPLAY_PAGE + "_SUCCESS":
-    case FETCH_DISPLAY_PAGE:
       const newList = [...state.list];
 
       let i = 0;
@@ -106,6 +110,13 @@ export default function (state = initialState, action) {
         offset,
         list: newList,
         totalCount,
+        loading,
+      };
+
+    case FETCH_DISPLAY_PAGE + "_FAILURE":
+      return {
+        ...state,
+        loading,
       };
     default:
       return state;

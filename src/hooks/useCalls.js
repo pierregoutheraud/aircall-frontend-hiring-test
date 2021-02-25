@@ -10,7 +10,9 @@ import {
 
 export default function useCalls(page = 1) {
   const dispatch = useDispatch();
-  const { totalCount, offset, limit } = useSelector(state => state.calls);
+  const { totalCount, offset, limit, loading } = useSelector(
+    state => state.calls
+  );
   const list = useSelector(selectList);
 
   useEffect(() => {
@@ -22,6 +24,7 @@ export default function useCalls(page = 1) {
     totalCount,
     offset,
     limit,
+    loading,
     setLimit: limit => dispatch(setLimit(limit)),
     displayPrevPage: () => dispatch(displayPrevPage()),
     displayNextPage: () => dispatch(displayNextPage()),
