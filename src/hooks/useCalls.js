@@ -1,21 +1,21 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  listenToCalls,
+  displayPageByNumber,
   displayPrevPage,
   displayNextPage,
   setLimit,
   selectList,
 } from "../redux/modules/calls";
 
-export default function useCalls() {
+export default function useCalls(page = 1) {
   const dispatch = useDispatch();
   const { totalCount, offset, limit } = useSelector(state => state.calls);
   const list = useSelector(selectList);
 
   useEffect(() => {
-    dispatch(listenToCalls());
-  }, []);
+    dispatch(displayPageByNumber(page));
+  }, [page]);
 
   return {
     list,

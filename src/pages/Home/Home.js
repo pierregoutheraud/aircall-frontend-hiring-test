@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useParams, useHistory } from "react-router-dom";
 import Call from "../../components/Call/Call";
 import PaginationNav from "../../components/PaginationNav/PaginationNav";
 import useCalls from "../../hooks/useCalls";
 import styles from "./Home.module.css";
 
 export default function Home() {
-  const {
-    list,
-    totalCount,
-    offset,
-    limit,
-    displayPrevPage,
-    displayNextPage,
-    setLimit,
-  } = useCalls();
+  const history = useHistory();
+  const page = parseInt(useParams().page || 1);
+
+  const { list, totalCount, offset, limit } = useCalls(page);
+
+  function goToPage(newPage) {
+    return function () {
+      history.push(`/${newPage}`);
+    };
+  }
 
   const _list = list.map(call => {
     return <Call key={call.id} className={styles.call} call={call} />;
@@ -26,8 +28,8 @@ export default function Home() {
         offset={offset}
         limit={limit}
         totalCount={totalCount}
-        onPrev={displayPrevPage}
-        onNext={displayNextPage}
+        onPrev={goToPage(page - 1)}
+        onNext={goToPage(page + 1)}
       />
     </main>
   );

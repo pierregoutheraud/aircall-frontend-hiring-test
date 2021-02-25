@@ -16,7 +16,7 @@ export default function Root() {
             <Route path="/login">
               <Login />
             </Route>
-            <PrivateRoute path="/">
+            <PrivateRoute path="/:page?">
               <Home />
             </PrivateRoute>
           </Switch>

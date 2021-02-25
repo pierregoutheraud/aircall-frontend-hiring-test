@@ -1,14 +1,8 @@
-import api from "../../lib/api";
 import { partOfArrayNotUndefined } from "../../lib/utils";
 
 export const FETCH_DISPLAY_PAGE = "FETCH_DISPLAY_PAGE";
 export const DISPLAY_PAGE = "DISPLAY_PAGE";
 export const DEFAULT_LIMIT = 5;
-
-export const listenToCalls = () => async dispatch => {
-  dispatch(displayPage(0));
-  // LISTEN TO PUSHER UPDATES HERE
-};
 
 export const fetchDisplayPage = newOffset => async (dispatch, getState) => {
   const {
@@ -26,20 +20,28 @@ export const fetchDisplayPage = newOffset => async (dispatch, getState) => {
   });
 };
 
+export const displayPageByNumber = (page = 1) => (dispatch, getState) => {
+  const {
+    calls: { limit },
+  } = getState();
+  const offset = (page - 1) * limit;
+  dispatch(displayPageByOffset(offset));
+};
+
 export const displayPrevPage = () => (dispatch, getState) => {
   const {
     calls: { offset, limit },
   } = getState();
-  dispatch(displayPage(offset - limit));
+  dispatch(displayPageByOffset(offset - limit));
 };
 export const displayNextPage = () => (dispatch, getState) => {
   const {
     calls: { offset, limit },
   } = getState();
-  dispatch(displayPage(offset + limit));
+  dispatch(displayPageByOffset(offset + limit));
 };
 
-export const displayPage = newOffset => async (dispatch, getState) => {
+export const displayPageByOffset = newOffset => async (dispatch, getState) => {
   const {
     calls: { list, limit },
   } = getState();
