@@ -11,7 +11,7 @@ export default function Home() {
   const history = useHistory();
   const page = parseInt(useParams().page || 1);
 
-  const { list, totalCount, limit, loading } = useCalls(page);
+  const { calls, totalCount, limit, loading } = useCalls(page);
   const { toggleArchived } = useCall();
 
   function goToPage(newPage) {
@@ -19,7 +19,7 @@ export default function Home() {
     history.push(`/${Math.max(newPage, 1)}`);
   }
 
-  const _list = list.map(call => {
+  const _calls = calls.map(call => {
     return (
       <Call
         key={call.id}
@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <main className={styles.container}>
       {loading ? <Loading className={styles.loading} /> : null}
-      <div className={styles.calls}>{_list}</div>
+      <div className={styles.calls}>{_calls}</div>
       <PaginationNav
         className={styles.nav}
         page={page}

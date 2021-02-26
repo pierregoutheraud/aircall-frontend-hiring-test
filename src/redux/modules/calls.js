@@ -7,7 +7,8 @@ import {
   PUSHER_AUTH_ENDPOINT,
 } from "../../constants";
 
-export const FETCH_DISPLAY_PAGE = "FETCH_DISPLAY_PAGE";
+export const FETCH_CALL = "FETCH_CALL";
+export const FETCH_CALLS_PAGE = "FETCH_CALLS_PAGE";
 export const DISPLAY_PAGE = "DISPLAY_PAGE";
 export const SET_ARCHIVED = "SET_ARCHIVED";
 export const DEFAULT_LIMIT = 20;
@@ -37,18 +38,30 @@ export const listenToCallsUpdates = () => (dispatch, getState) => {
   });
 };
 
+export const fetchCall = callId => async (dispatch, getState) => {
+  return dispatch({
+    useApi: true,
+    type: FETCH_CALL,
+    method: "GET",
+    endpoint: `/calls/${callId}`,
+    onSuccess: async data => {
+      return { callId: data.id, call: data };
+    },
+  });
+};
+
 export const fetchDisplayPage = newOffset => async (dispatch, getState) => {
   const {
     calls: { limit },
   } = getState();
   return dispatch({
     useApi: true,
-    type: FETCH_DISPLAY_PAGE,
+    type: FETCH_CALLS_PAGE,
     method: "GET",
     endpoint: `/calls?offset=${newOffset}&limit=${limit}`,
     onSuccess: async data => {
-      const { nodes: list, totalCount } = data;
-      return { list, totalCount, offset: newOffset };
+      const { nodes, totalCount } = data;
+      return { nodes, totalCount, offset: newOffset };
     },
   });
 };
@@ -104,12 +117,11 @@ export const toggleArchived = (callId, isArchived) => (dispatch, getState) => {
   return dispatch({ type: SET_ARCHIVED, callId, isArchived });
 };
 
-export function selectList(state) {
+export function selectCalls(state) {
   const {
-    calls: { list, limit, offset },
+    calls: { list, data, limit, offset },
   } = state;
-  const newList = list.slice(offset, offset + limit);
-  return newList;
+  return list.slice(offset, offset + limit).map(id => data[id]);
 }
 
 export const selectCall = callId => state => {
@@ -117,13 +129,14 @@ export const selectCall = callId => state => {
     return null;
   }
   const {
-    calls: { list },
+    calls: { data },
   } = state;
-  return list && list.length && list.find(call => call.id === callId);
+  return data[callId];
 };
 
-const initialState = {
+export const initialState = {
   list: [],
+  data: {},
   offset: 0,
   limit: DEFAULT_LIMIT,
   totalCount: 0,
@@ -134,55 +147,66 @@ export default function (state = initialState, action) {
   const {
     type,
     offset,
-    list,
     totalCount,
     loading,
     callId,
+    call,
     isArchived,
+    nodes,
   } = action;
 
   switch (type) {
+    case FETCH_CALL + "_SUCCESS":
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [callId]: call,
+        },
+      };
     case SET_ARCHIVED:
       return {
         ...state,
-        list: state.list.map(call => {
-          if (call.id === callId) {
-            return {
-              ...call,
-              is_archived: isArchived,
-            };
-          }
-          return call;
-        }),
+        data: {
+          ...state.data,
+          [callId]: {
+            ...state.data[callId],
+            is_archived: isArchived,
+          },
+        },
       };
     case DISPLAY_PAGE:
       return {
         ...state,
         offset,
       };
-    case FETCH_DISPLAY_PAGE + "_REQUEST":
+    case FETCH_CALLS_PAGE + "_REQUEST":
       return {
         ...state,
         loading,
       };
-    case FETCH_DISPLAY_PAGE + "_SUCCESS":
+    case FETCH_CALLS_PAGE + "_SUCCESS":
       const newList = [...state.list];
+      const newData = { ...state.data };
 
       let i = 0;
-      list.forEach(call => {
-        newList[offset + i] = call;
+      nodes.forEach(call => {
+        const { id } = call;
+        newList[offset + i] = id;
+        newData[id] = call;
         i++;
       });
 
       return {
         ...state,
-        offset,
         list: newList,
+        data: newData,
+        offset,
         totalCount,
         loading,
       };
 
-    case FETCH_DISPLAY_PAGE + "_FAILURE":
+    case FETCH_CALLS_PAGE + "_FAILURE":
       return {
         ...state,
         loading,

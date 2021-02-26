@@ -1,29 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleArchived, selectCall } from "../redux/modules/calls";
-import api from "../lib/api";
+import {
+  listenToCallsUpdates,
+  toggleArchived,
+  selectCall,
+  fetchCall,
+} from "../redux/modules/calls";
 
 export default function useCall(callId = null) {
   const dispatch = useDispatch();
-  const [call, setCall] = useState(null);
-  const storeCall = useSelector(selectCall(callId));
-
-  function fetchCall() {
-    return api.get(`/calls/${callId}`);
-  }
-
-  async function getCall() {
-    try {
-      const _call = storeCall || (await fetchCall());
-      setCall(_call);
-    } catch (e) {
-      console.log(e);
-    }
-  }
+  const call = useSelector(selectCall(callId));
 
   useEffect(() => {
-    if (callId) {
-      getCall();
+    dispatch(listenToCallsUpdates());
+
+    if (callId && !call) {
+      dispatch(fetchCall(callId));
     }
   }, []);
 

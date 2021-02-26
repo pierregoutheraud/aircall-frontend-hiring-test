@@ -6,7 +6,7 @@ import {
   displayPrevPage,
   displayNextPage,
   setLimit,
-  selectList,
+  selectCalls,
 } from "../redux/modules/calls";
 
 export default function useCalls(page = 1) {
@@ -14,7 +14,7 @@ export default function useCalls(page = 1) {
   const { totalCount, offset, limit, loading } = useSelector(
     state => state.calls
   );
-  const list = useSelector(selectList);
+  const calls = useSelector(selectCalls);
 
   useEffect(() => {
     dispatch(listenToCallsUpdates());
@@ -25,7 +25,7 @@ export default function useCalls(page = 1) {
   }, [page]);
 
   return {
-    list,
+    calls,
     totalCount,
     offset,
     limit,
