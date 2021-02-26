@@ -1,6 +1,10 @@
 :root {
   --primaryBase: #00b388;
+  --greyDark: #86867c;
   --greyBase: #d9d9d5;
+  --greyLight: #e8e7e6;
+  --greyLighter: #f7f7f7;
+  --secondaryLighter: ##cccecf;
 }
 
 html {

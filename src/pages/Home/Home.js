@@ -17,8 +17,20 @@ export default function Home() {
     history.push(`/${Math.max(newPage, 1)}`);
   }
 
+  function handleChangeArchived(archived) {
+    console.log(archived);
+  }
+
   const _list = list.map(call => {
-    return <Call key={call.id} className={styles.call} call={call} />;
+    return (
+      <Call
+        key={call.id}
+        className={styles.call}
+        call={call}
+        isClickable
+        onChangeArchived={handleChangeArchived}
+      />
+    );
   });
 
   return (
