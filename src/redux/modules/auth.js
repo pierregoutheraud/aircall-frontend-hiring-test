@@ -27,7 +27,6 @@ export function logout() {
 }
 
 export const checkAuth = () => async dispatch => {
-  console.log("checkAuth");
   const accessToken = window.localStorage.getItem("accessToken");
 
   if (!accessToken) {
