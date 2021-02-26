@@ -5,7 +5,7 @@ import calls, {
 } from "./calls";
 
 describe("calls reducer", () => {
-  test("should handle FETCH_DISPLAY_PAGE", () => {
+  test("should handle FETCH_DISPLAY_PAGE_SUCCESS", () => {
     const state0 = {
       list: [1, 2],
       offset: 0,
@@ -14,7 +14,7 @@ describe("calls reducer", () => {
     };
 
     const state1 = calls(state0, {
-      type: FETCH_DISPLAY_PAGE,
+      type: FETCH_DISPLAY_PAGE + "_SUCCESS",
       list: [5, 6],
       offset: 4,
       totalCount: 100,
@@ -23,7 +23,7 @@ describe("calls reducer", () => {
     expect(state1.list).toEqual([1, 2, undefined, undefined, 5, 6]);
 
     const state2 = calls(state1, {
-      type: FETCH_DISPLAY_PAGE,
+      type: FETCH_DISPLAY_PAGE + "_SUCCESS",
       list: [8, 9, 10],
       offset: 7,
       totalCount: 100,
