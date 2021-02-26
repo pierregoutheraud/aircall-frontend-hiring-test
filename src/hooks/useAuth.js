@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/modules/auth";
+import { checkAuth, login } from "../redux/modules/auth";
 
 export default function useAuth() {
   const dispatch = useDispatch();
@@ -12,6 +12,7 @@ export default function useAuth() {
     isAuthenticated,
     user,
     accessToken,
+    checkAuth: () => dispatch(checkAuth()),
     login: (...credentials) => dispatch(login(...credentials)),
   };
 }
