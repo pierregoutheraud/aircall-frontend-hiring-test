@@ -6,6 +6,7 @@ import store from "./redux/store";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
+import CallPage from "./pages/CallPage/CallPage";
 
 export default function Root() {
   return (
@@ -16,6 +17,9 @@ export default function Root() {
             <Route path="/login">
               <Login />
             </Route>
+            <PrivateRoute path="/call/:callId">
+              <CallPage />
+            </PrivateRoute>
             <PrivateRoute path="/:page?">
               <Home />
             </PrivateRoute>
