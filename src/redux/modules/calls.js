@@ -1,8 +1,41 @@
+import Pusher from "pusher-js";
 import { partOfArrayNotUndefined } from "../../lib/utils";
+import api from "../../lib/api";
+import {
+  PUSHER_APP_CLUSTER,
+  PUSHER_APP_KEY,
+  PUSHER_AUTH_ENDPOINT,
+} from "../../constants";
 
 export const FETCH_DISPLAY_PAGE = "FETCH_DISPLAY_PAGE";
 export const DISPLAY_PAGE = "DISPLAY_PAGE";
+export const SET_ARCHIVED = "SET_ARCHIVED";
 export const DEFAULT_LIMIT = 20;
+
+let listenning = false;
+export const listenToCallsUpdates = () => (dispatch, getState) => {
+  if (listenning) {
+    return;
+  }
+  listenning = true;
+
+  const { auth } = getState();
+  const pusher = new Pusher(PUSHER_APP_KEY, {
+    cluster: PUSHER_APP_CLUSTER,
+    authEndpoint: PUSHER_AUTH_ENDPOINT,
+    auth: {
+      headers: {
+        Authorization: `Bearer ${auth.accessToken}`,
+      },
+    },
+  });
+
+  const channel = pusher.subscribe("private-aircall");
+  channel.bind("update-call", function (call) {
+    const { id: callId, is_archived: isArchived } = call;
+    dispatch({ type: SET_ARCHIVED, callId, isArchived });
+  });
+};
 
 export const fetchDisplayPage = newOffset => async (dispatch, getState) => {
   const {
@@ -66,6 +99,11 @@ export function setLimit(limit) {
   };
 }
 
+export const toggleArchived = (callId, isArchived) => (dispatch, getState) => {
+  api.put(`/calls/${callId}/archive`);
+  return dispatch({ type: SET_ARCHIVED, callId, isArchived });
+};
+
 export function selectList(state) {
   const {
     calls: { list, limit, offset },
@@ -73,6 +111,16 @@ export function selectList(state) {
   const newList = list.slice(offset, offset + limit);
   return newList;
 }
+
+export const selectCall = callId => state => {
+  if (!callId) {
+    return null;
+  }
+  const {
+    calls: { list },
+  } = state;
+  return list && list.length && list.find(call => call.id === callId);
+};
 
 const initialState = {
   list: [],
@@ -83,9 +131,30 @@ const initialState = {
 };
 
 export default function (state = initialState, action) {
-  const { type, offset, list, totalCount, loading } = action;
+  const {
+    type,
+    offset,
+    list,
+    totalCount,
+    loading,
+    callId,
+    isArchived,
+  } = action;
 
   switch (type) {
+    case SET_ARCHIVED:
+      return {
+        ...state,
+        list: state.list.map(call => {
+          if (call.id === callId) {
+            return {
+              ...call,
+              is_archived: isArchived,
+            };
+          }
+          return call;
+        }),
+      };
     case DISPLAY_PAGE:
       return {
         ...state,

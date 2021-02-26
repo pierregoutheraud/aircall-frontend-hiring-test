@@ -4,6 +4,7 @@ import Call from "../../components/Call/Call";
 import PaginationNav from "../../components/PaginationNav/PaginationNav";
 import Loading from "../../components/Loading/Loading";
 import useCalls from "../../hooks/useCalls";
+import useCall from "../../hooks/useCall";
 import styles from "./Home.module.css";
 
 export default function Home() {
@@ -11,14 +12,11 @@ export default function Home() {
   const page = parseInt(useParams().page || 1);
 
   const { list, totalCount, limit, loading } = useCalls(page);
+  const { toggleArchived } = useCall();
 
   function goToPage(newPage) {
     window.scrollTo({ top: 0, behavior: "smooth" });
     history.push(`/${Math.max(newPage, 1)}`);
-  }
-
-  function handleChangeArchived(archived) {
-    console.log(archived);
   }
 
   const _list = list.map(call => {
@@ -27,8 +25,9 @@ export default function Home() {
         key={call.id}
         className={styles.call}
         call={call}
+        onChangeArchived={toggleArchived}
+        hasCheckbox
         isClickable
-        onChangeArchived={handleChangeArchived}
       />
     );
   });

@@ -57,7 +57,7 @@ export default function Call({
 
   function handleClickArchive(e) {
     e.stopPropagation();
-    onChangeArchived(!isArchived);
+    onChangeArchived(id, !isArchived);
   }
 
   function getTypeIcon() {

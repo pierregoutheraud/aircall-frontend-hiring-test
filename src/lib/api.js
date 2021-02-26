@@ -19,6 +19,10 @@ class API {
     return this.call("GET", endpoint);
   }
 
+  put(endpoint, data = {}) {
+    return this.call("PUT", endpoint, data);
+  }
+
   post(endpoint, data = {}) {
     return this.call("POST", endpoint, data);
   }

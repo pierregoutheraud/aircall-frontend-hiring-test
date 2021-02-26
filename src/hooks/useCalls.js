@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  listenToCallsUpdates,
   displayPageByNumber,
   displayPrevPage,
   displayNextPage,
@@ -14,6 +15,10 @@ export default function useCalls(page = 1) {
     state => state.calls
   );
   const list = useSelector(selectList);
+
+  useEffect(() => {
+    dispatch(listenToCallsUpdates());
+  }, []);
 
   useEffect(() => {
     dispatch(displayPageByNumber(page));
