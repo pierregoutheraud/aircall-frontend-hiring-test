@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import cx from "classnames";
 import {
   Icon,
@@ -27,28 +27,26 @@ const CALL_TYPES = {
   VOICEMAIL: "voicemail",
 };
 
-export default function Call({
-  call,
+function Call({
+  id,
+  duration,
+  is_archived: isArchived,
+  from,
+  to,
+  direction,
+  call_type: callType,
+  via,
+  created_at: createdAt,
+  notes,
   className,
   isClickable = false,
   hasCheckbox = false,
   hasVia = false,
   hasNotes = false,
+  onCheck = () => {},
   onChangeArchived = () => {},
 }) {
   const history = useHistory();
-  const {
-    id,
-    duration,
-    is_archived: isArchived,
-    from,
-    to,
-    direction,
-    call_type: callType,
-    via,
-    created_at: createdAt,
-    notes,
-  } = call;
   const createdAtDate = new Date(createdAt);
 
   function handleClick() {
@@ -132,7 +130,7 @@ export default function Call({
         {hasCheckbox && (
           <div className={styles.column}>
             <Checkbox
-              onChange={e => console.log(e)}
+              onChange={checked => onCheck(id, checked)}
               onClick={e => e.stopPropagation()}
             />
           </div>
@@ -182,3 +180,5 @@ export default function Call({
     </div>
   );
 }
+
+export default memo(Call);

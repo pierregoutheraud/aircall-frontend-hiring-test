@@ -9,13 +9,13 @@ import styles from "./CallPage.module.css";
 export default function CallPage() {
   const { callId } = useParams();
 
-  const { call, toggleArchived } = useCall(callId);
+  const { call, toggleIsArchived } = useCall(callId);
 
   return (
     <main className={styles.container}>
       <GoBack className={styles.goBack} />
       {call ? (
-        <Call call={call} onChangeArchived={toggleArchived} hasVia hasNotes />
+        <Call {...call} onChangeArchived={toggleIsArchived} hasVia hasNotes />
       ) : (
         <Loading />
       )}

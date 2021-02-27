@@ -1,6 +1,6 @@
 import Pusher from "pusher-js";
+import debounce from "lodash.debounce";
 import { partOfArrayNotUndefined } from "../../lib/utils";
-import api from "../../lib/api";
 import {
   PUSHER_APP_CLUSTER,
   PUSHER_APP_KEY,
@@ -10,8 +10,9 @@ import {
 export const FETCH_CALL = "FETCH_CALL";
 export const FETCH_CALLS_PAGE = "FETCH_CALLS_PAGE";
 export const DISPLAY_PAGE = "DISPLAY_PAGE";
-export const SET_ARCHIVED = "SET_ARCHIVED";
-export const DEFAULT_LIMIT = 20;
+export const SET_CALLS = "SET_CALLS";
+export const TOGGLE_IS_ARCHIVED = "TOGGLE_IS_ARCHIVED";
+export const DEFAULT_LIMIT = 15;
 
 let listenning = false;
 export const listenToCallsUpdates = () => (dispatch, getState) => {
@@ -32,10 +33,21 @@ export const listenToCallsUpdates = () => (dispatch, getState) => {
   });
 
   const channel = pusher.subscribe("private-aircall");
-  channel.bind("update-call", function (call) {
-    const { id: callId, is_archived: isArchived } = call;
-    dispatch({ type: SET_ARCHIVED, callId, isArchived });
-  });
+
+  let calls = {};
+  function handleCallUpdate(call) {
+    calls = {
+      ...calls,
+      [call.id]: call,
+    };
+    setCalls(calls);
+  }
+
+  const setCalls = debounce(calls => {
+    dispatch({ type: SET_CALLS, calls });
+  }, 1500);
+
+  channel.bind("update-call", handleCallUpdate);
 };
 
 export const fetchCall = callId => async (dispatch, getState) => {
@@ -44,9 +56,7 @@ export const fetchCall = callId => async (dispatch, getState) => {
     type: FETCH_CALL,
     method: "GET",
     endpoint: `/calls/${callId}`,
-    onSuccess: async data => {
-      return { callId: data.id, call: data };
-    },
+    onSuccess: call => ({ call }),
   });
 };
 
@@ -59,7 +69,7 @@ export const fetchDisplayPage = newOffset => async (dispatch, getState) => {
     type: FETCH_CALLS_PAGE,
     method: "GET",
     endpoint: `/calls?offset=${newOffset}&limit=${limit}`,
-    onSuccess: async data => {
+    onSuccess: data => {
       const { nodes, totalCount } = data;
       return { nodes, totalCount, offset: newOffset };
     },
@@ -71,20 +81,7 @@ export const displayPageByNumber = (page = 1) => (dispatch, getState) => {
     calls: { limit },
   } = getState();
   const offset = (page - 1) * limit;
-  dispatch(displayPageByOffset(offset));
-};
-
-export const displayPrevPage = () => (dispatch, getState) => {
-  const {
-    calls: { offset, limit },
-  } = getState();
-  dispatch(displayPageByOffset(offset - limit));
-};
-export const displayNextPage = () => (dispatch, getState) => {
-  const {
-    calls: { offset, limit },
-  } = getState();
-  dispatch(displayPageByOffset(offset + limit));
+  return dispatch(displayPageByOffset(offset));
 };
 
 export const displayPageByOffset = newOffset => async (dispatch, getState) => {
@@ -105,16 +102,40 @@ export const displayPageByOffset = newOffset => async (dispatch, getState) => {
   dispatch({ type: DISPLAY_PAGE, offset: newOffset });
 };
 
-export function setLimit(limit) {
-  return {
-    type: "SET_LIMIT",
-    limit,
-  };
-}
+export const archiveCalls = callsIds => (dispatch, getState) => {
+  const {
+    calls: { data },
+  } = getState();
+  callsIds.forEach(callId => {
+    if (!data[callId] || data[callId].is_archived) {
+      return;
+    }
+    dispatch(toggleIsArchived(callId));
+  });
+};
 
-export const toggleArchived = (callId, isArchived) => (dispatch, getState) => {
-  api.put(`/calls/${callId}/archive`);
-  return dispatch({ type: SET_ARCHIVED, callId, isArchived });
+export const unarchiveCalls = callsIds => (dispatch, getState) => {
+  const {
+    calls: { data },
+  } = getState();
+  callsIds.forEach(callId => {
+    if (!data[callId] || !data[callId].is_archived) {
+      return;
+    }
+    dispatch(toggleIsArchived(callId));
+  });
+};
+
+// I could have done something more generic here instead like an editCall function thats takes a key and a value
+// but since I can not send the value to the api, I went for something specifc to is_archived field
+export const toggleIsArchived = callId => dispatch => {
+  return dispatch({
+    useApi: true,
+    type: TOGGLE_IS_ARCHIVED,
+    method: "PUT",
+    endpoint: `/calls/${callId}/archive`,
+    callId,
+  });
 };
 
 export function selectCalls(state) {
@@ -151,27 +172,35 @@ export default function (state = initialState, action) {
     loading,
     callId,
     call,
-    isArchived,
+    calls,
     nodes,
   } = action;
 
   switch (type) {
+    case SET_CALLS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...calls,
+        },
+      };
     case FETCH_CALL + "_SUCCESS":
       return {
         ...state,
         data: {
           ...state.data,
-          [callId]: call,
+          [call.id]: call,
         },
       };
-    case SET_ARCHIVED:
+    case TOGGLE_IS_ARCHIVED + "_REQUEST":
       return {
         ...state,
         data: {
           ...state.data,
           [callId]: {
             ...state.data[callId],
-            is_archived: isArchived,
+            is_archived: !state.data[callId].is_archived,
           },
         },
       };

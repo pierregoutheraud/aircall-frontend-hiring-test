@@ -1,10 +1,60 @@
+import configureMockStore from "redux-mock-store";
+import thunk from "redux-thunk";
 import calls, {
   FETCH_CALL,
   FETCH_CALLS_PAGE,
   DISPLAY_PAGE,
-  SET_ARCHIVED,
+  SET_CALLS,
+  TOGGLE_IS_ARCHIVED,
+  displayPageByNumber,
   initialState,
+  DEFAULT_LIMIT,
 } from "./calls";
+import apiMiddleware from "../apiMiddleware";
+import api from "../../lib/api";
+jest.mock("../../lib/api");
+
+const middlewares = [thunk, apiMiddleware];
+const mockStore = configureMockStore(middlewares);
+
+api.call = jest.fn(() => {
+  return Promise.resolve({
+    nodes: [...new Array(15)].map((v, i) => ({
+      id: `id${i + 1}`,
+    })),
+    totalCount: 10,
+  });
+});
+
+describe("calls actions", () => {
+  let store;
+  beforeEach(() => {
+    store = mockStore({
+      calls: initialState,
+    });
+  });
+
+  test("displayPageByNumber fetch first time", async () => {
+    store.dispatch(displayPageByNumber(1));
+    expect(store.getActions()[0].type).toEqual(FETCH_CALLS_PAGE + "_REQUEST");
+  });
+
+  test("displayPageByNumber do not fetch second time", async () => {
+    store = mockStore({
+      calls: {
+        ...initialState,
+        list: [...new Array(50)].map((v, i) => ({
+          id: `id${i + 1}`,
+        })),
+      },
+    });
+
+    store.dispatch(displayPageByNumber(1));
+    expect(store.getActions()[0].type).not.toEqual(
+      FETCH_CALLS_PAGE + "_REQUEST"
+    );
+  });
+});
 
 describe("calls reducer", () => {
   test("should handle FETCH_CALL", () => {
@@ -16,25 +66,6 @@ describe("calls reducer", () => {
 
     expect(state.data).toEqual({
       id1: { id: "id1" },
-    });
-  });
-
-  test("should handle SET_ARCHIVED", () => {
-    const state0 = {
-      ...initialState,
-      data: {
-        id1: { id: "id1", is_archived: false },
-      },
-    };
-
-    const state = calls(state0, {
-      type: SET_ARCHIVED,
-      isArchived: true,
-      callId: "id1",
-    });
-
-    expect(state.data).toEqual({
-      id1: { id: "id1", is_archived: true },
     });
   });
 
@@ -128,6 +159,53 @@ describe("calls reducer", () => {
       offset: 2,
       limit: 5,
       totalCount: 100,
+    });
+  });
+
+  test("should handle SET_CALLS", () => {
+    const state0 = {
+      ...initialState,
+      data: {
+        id1: { id: "id1" },
+      },
+    };
+
+    const state1 = calls(state0, {
+      type: SET_CALLS,
+      calls: {
+        id2: { id: "id2" },
+        id3: { id: "id3" },
+      },
+    });
+
+    expect(state1).toEqual({
+      ...initialState,
+      data: {
+        id1: { id: "id1" },
+        id2: { id: "id2" },
+        id3: { id: "id3" },
+      },
+    });
+  });
+
+  test("should handle TOGGLE_IS_ARCHIVED", () => {
+    const state0 = {
+      ...initialState,
+      data: {
+        id1: { id: "id1", is_archived: false },
+      },
+    };
+
+    const state1 = calls(state0, {
+      type: TOGGLE_IS_ARCHIVED + "_REQUEST",
+      callId: "id1",
+    });
+
+    expect(state1).toEqual({
+      ...initialState,
+      data: {
+        id1: { id: "id1", is_archived: true },
+      },
     });
   });
 });

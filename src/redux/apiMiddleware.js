@@ -9,6 +9,7 @@ export default function apiMiddleware({ dispatch, getState }) {
       body = null,
       method = "GET",
       onSuccess = data => Promise.resolve(data),
+      ...restAction
     } = action;
 
     if (!useApi) {
@@ -23,22 +24,20 @@ export default function apiMiddleware({ dispatch, getState }) {
     const successType = type + "_SUCCESS";
     const failureType = type + "_FAILURE";
 
-    dispatch({ type: requestType, loading: true });
+    dispatch({ type: requestType, loading: true, ...restAction });
 
     try {
-      const data = await (method === "GET"
-        ? api.get(endpoint)
-        : api.post(endpoint, body));
-
-      const payload = await onSuccess(data, dispatch, getState);
+      const data = await api.call(method, endpoint, body);
+      const payload = onSuccess(data, dispatch, getState);
 
       dispatch({
         type: successType,
         loading: false,
+        ...restAction,
         ...payload,
       });
     } catch (e) {
-      dispatch({ type: failureType, loading: false });
+      dispatch({ type: failureType, loading: false, ...restAction });
     }
   };
 }

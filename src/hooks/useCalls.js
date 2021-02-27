@@ -3,10 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   listenToCallsUpdates,
   displayPageByNumber,
-  displayPrevPage,
-  displayNextPage,
-  setLimit,
   selectCalls,
+  archiveCalls,
+  unarchiveCalls,
 } from "../redux/modules/calls";
 
 export default function useCalls(page = 1) {
@@ -30,8 +29,7 @@ export default function useCalls(page = 1) {
     offset,
     limit,
     loading,
-    setLimit: limit => dispatch(setLimit(limit)),
-    displayPrevPage: () => dispatch(displayPrevPage()),
-    displayNextPage: () => dispatch(displayNextPage()),
+    archiveCalls: callsIds => dispatch(archiveCalls(callsIds)),
+    unarchiveCalls: callsIds => dispatch(unarchiveCalls(callsIds)),
   };
 }

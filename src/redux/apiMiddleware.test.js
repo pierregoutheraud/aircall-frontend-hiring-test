@@ -32,17 +32,18 @@ describe("apiMiddleware", () => {
       nodes: [],
       totalCount: 100,
     };
-    api.get = jest.fn(() => Promise.resolve(mockData));
+    api.call = jest.fn(() => Promise.resolve(mockData));
 
     const { store, invoke } = create();
 
     const onSuccess = jest.fn((data, dispatch, getState) => data);
     const endpoint = "/calls?offset=0&limit=10";
     const type = "TEST";
+    const method = "GET";
     const action = {
       useApi: true,
       type: "TEST",
-      method: "GET",
+      method,
       endpoint,
       onSuccess,
     };
@@ -54,7 +55,7 @@ describe("apiMiddleware", () => {
       loading: true,
     });
 
-    expect(api.get).toHaveBeenCalledWith(endpoint);
+    expect(api.call).toHaveBeenCalledWith(method, endpoint, null);
     expect(onSuccess).toHaveBeenCalledWith(
       mockData,
       store.dispatch,
@@ -71,7 +72,7 @@ describe("apiMiddleware", () => {
   });
 
   test("error", async () => {
-    api.get = jest.fn(() => Promise.reject());
+    api.call = jest.fn(() => Promise.reject());
 
     const { store, invoke } = create();
 

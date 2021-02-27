@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .loading {
@@ -16,11 +17,16 @@
   align-items: center;
 }
 
+.buttons {
+  display: flex;
+  padding: 30px 0;
+}
+
 .calls {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 40px 40px 200px 40px;
+  padding: 0px 40px 200px 40px;
 }
 
 .call {
