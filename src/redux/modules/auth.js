@@ -3,15 +3,27 @@ import api from "../../lib/api";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
 
-export const login = (username = null, password = null) => async dispatch => {
+// A more elegant solution is to create a redux middleware
+// to store data we need in local storage (redux-persist)
+function setAuthInLocalStorage(accessToken) {
+  const expiredAt = Date.now() + 10 * 60 * 1000;
+  localStorage.setItem("auth", JSON.stringify({ accessToken, expiredAt }));
+  return expiredAt;
+}
+
+export const login = (
+  username = null,
+  password = null,
+  refreshToken = false
+) => async dispatch => {
   try {
-    let data = await api.login(username, password);
-    const { user, access_token: accessToken } = data;
-    localStorage.setItem("accessToken", accessToken);
-    // I should not have to store user, but since api route /me does not work
-    // I set it as a workaround
-    localStorage.setItem("user", JSON.stringify(user));
-    return dispatch({ type: LOGIN_SUCCESS, user, accessToken });
+    const { user, access_token: accessToken } = refreshToken
+      ? await api.post("/auth/refresh-token")
+      : await api.login(username, password);
+
+    api.setAccessToken(accessToken);
+    const expiredAt = setAuthInLocalStorage(accessToken);
+    return dispatch(hasLoggedIn(user, accessToken, expiredAt));
   } catch (e) {
     console.log(e);
     return dispatch(logout());
@@ -19,7 +31,8 @@ export const login = (username = null, password = null) => async dispatch => {
 };
 
 export function logout() {
-  ["user", "accessToken"].forEach(key => localStorage.removeItem(key));
+  clearTimeout(timeoutRefreshToken);
+  localStorage.removeItem("auth");
   api.setAccessToken(null);
   return {
     type: LOGIN_FAILURE,
@@ -27,34 +40,59 @@ export function logout() {
 }
 
 export const checkAuth = () => async dispatch => {
-  const accessToken = window.localStorage.getItem("accessToken");
+  const auth = JSON.parse(window.localStorage.getItem("auth"));
 
-  if (!accessToken) {
+  if (!auth) {
     return dispatch(logout());
   }
 
-  const user = JSON.parse(window.localStorage.getItem("user"));
-  api.setAccessToken(accessToken);
+  const { accessToken, expiredAt } = auth;
+  const isTokenExpired = Date.now() > expiredAt;
+
+  if (isTokenExpired) {
+    return dispatch(logout());
+  }
 
   try {
-    // Here I should be using the api route /me but this route does not seem to work (404)
-    // so I am using route /calls instead just to check if accessToken is valid
-    // await api.get("/me");
-    await api.get("/calls?limit=0");
-    return dispatch({ type: LOGIN_SUCCESS, user, accessToken });
+    api.setAccessToken(accessToken);
+    const user = await api.get("/me");
+
+    return dispatch(hasLoggedIn(user, accessToken, expiredAt));
   } catch (e) {
     return dispatch(logout());
   }
+};
+
+let timeoutRefreshToken = null;
+export const hasLoggedIn = (user, accessToken, expiredAt) => (
+  dispatch,
+  getState
+) => {
+  // Refresh token 1 minute before it expires
+  const refreshTokenAt = expiredAt - 60000;
+
+  if (Date.now() >= refreshTokenAt) {
+    return dispatch(login(null, null, true));
+  } else {
+    const refreshTokenIn = refreshTokenAt - Date.now();
+    timeoutRefreshToken = setTimeout(
+      () => dispatch(login(null, null, true)),
+      refreshTokenIn
+    );
+  }
+
+  return dispatch({ type: LOGIN_SUCCESS, user, accessToken, expiredAt });
 };
 
 const initialState = {
   isAuthenticated: null,
   user: null,
   accessToken: null,
+  expiredAt: null,
 };
 
 export default function (state = initialState, action) {
-  const { type, user, accessToken } = action;
+  const { type, user, accessToken, expiredAt } = action;
   switch (type) {
     case LOGIN_SUCCESS:
       return {
@@ -62,6 +100,7 @@ export default function (state = initialState, action) {
         isAuthenticated: true,
         user,
         accessToken,
+        expiredAt,
       };
     case LOGIN_FAILURE:
       return {
@@ -69,6 +108,7 @@ export default function (state = initialState, action) {
         isAuthenticated: false,
         user: null,
         accessToken: null,
+        expiredAt: null,
       };
     default:
       return state;

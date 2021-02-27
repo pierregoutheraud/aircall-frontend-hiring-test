@@ -11,7 +11,6 @@ class API {
   async login(username, password) {
     const data = await this.post("/auth/login", { username, password });
     const { access_token: accessToken } = data;
-    this.setAccessToken(accessToken);
     return data;
   }
 

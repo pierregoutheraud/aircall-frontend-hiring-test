@@ -1,4 +1,11 @@
-import auth, { LOGIN_SUCCESS, LOGIN_FAILURE } from "./auth";
+import auth, {
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE,
+  login,
+  logout,
+  checkAuth,
+  initialState,
+} from "./auth";
 
 describe("auth reducer", () => {
   test("should handle LOGIN_SUCCESS", () => {
@@ -32,6 +39,7 @@ describe("auth reducer", () => {
       isAuthenticated: false,
       user: null,
       accessToken: null,
+      expiredAt: null,
     });
   });
 });

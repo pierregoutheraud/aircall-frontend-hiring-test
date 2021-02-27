@@ -25,13 +25,6 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // TEST PURPOSE ! REMOVE THIS !
-  useEffect(() => {
-    auth.login("pierre", "123").then(() => {
-      history.replace(from);
-    });
-  }, []);
-
   async function handleSubmit() {
     if (!username.length || !password.length) {
       return;
