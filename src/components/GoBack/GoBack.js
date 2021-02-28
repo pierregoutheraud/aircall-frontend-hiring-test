@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import cx from "classnames";
 import { useHistory, useLocation } from "react-router-dom";
 import { IconButton, ArrowSendOutlined } from "@aircall/tractor";
