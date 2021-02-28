@@ -14,6 +14,9 @@ export const SET_CALLS = "SET_CALLS";
 export const TOGGLE_IS_ARCHIVED = "TOGGLE_IS_ARCHIVED";
 export const DEFAULT_LIMIT = 15;
 
+let pusherCalls = null;
+let setPusherCalls = () => {};
+
 let listenning = false;
 export const listenToCallsUpdates = () => (dispatch, getState) => {
   if (listenning) {
@@ -34,18 +37,17 @@ export const listenToCallsUpdates = () => (dispatch, getState) => {
 
   const channel = pusher.subscribe("private-aircall");
 
-  const setCalls = debounce(calls => {
-    dispatch({ type: SET_CALLS, calls });
-    calls = null;
-  }, 1500);
+  setPusherCalls = debounce(() => {
+    dispatch({ type: SET_CALLS, calls: pusherCalls });
+    pusherCalls = null;
+  }, 1000);
 
-  let calls = null;
   function handleCallUpdate(call) {
-    calls = {
-      ...(calls || {}),
+    pusherCalls = {
+      ...(pusherCalls || {}),
       [call.id]: call,
     };
-    setCalls(calls);
+    setPusherCalls();
   }
 
   channel.bind("update-call", handleCallUpdate);
@@ -130,6 +132,8 @@ export const unarchiveCalls = callsIds => (dispatch, getState) => {
 // I could have done something more generic here instead like an editCall function thats takes a key and a value
 // but since I can not send the value to the api, I went for something specifc to is_archived field
 export const toggleIsArchived = callId => dispatch => {
+  setPusherCalls(); // Delay any incoming updates from PUSHER so that we do not get visual glitches
+
   return dispatch({
     useApi: true,
     type: TOGGLE_IS_ARCHIVED,
