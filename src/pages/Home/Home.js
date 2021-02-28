@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import { Spacer, Button, ArchiveOutlined } from "@aircall/tractor";
 import Call from "../../components/Call/Call";
 import CallGroups from "../../components/CallGroups/CallGroups";
 import PaginationNav from "../../components/PaginationNav/PaginationNav";
@@ -8,6 +7,7 @@ import Loading from "../../components/Loading/Loading";
 import useCalls from "../../hooks/useCalls";
 import useCall from "../../hooks/useCall";
 import styles from "./Home.module.css";
+import CallsActions from "../../components/CallsActions/CallsActions";
 
 export default function Home() {
   const history = useHistory();
@@ -62,25 +62,17 @@ export default function Home() {
   return (
     <main className={styles.container}>
       {loading ? <Loading className={styles.loading} /> : null}
-      <Spacer className={styles.buttons} space="s">
-        <Button
-          disabled={!callsIdsChecked.length}
-          variant="destructive"
-          onClick={() => archiveCalls(callsIdsChecked)}
-        >
-          <ArchiveOutlined /> Archive
-        </Button>
 
-        <Button
-          disabled={!callsIdsChecked.length}
-          onClick={() => unarchiveCalls(callsIdsChecked)}
-        >
-          <ArchiveOutlined /> Unarchive
-        </Button>
-      </Spacer>
+      <CallsActions
+        disabled={!callsIdsChecked.length}
+        onArchive={() => archiveCalls(callsIdsChecked)}
+        onUnarchive={() => unarchiveCalls(callsIdsChecked)}
+      />
+
       <div className={styles.calls}>
         <CallGroups>{_calls}</CallGroups>
       </div>
+
       <PaginationNav
         className={styles.nav}
         page={page}

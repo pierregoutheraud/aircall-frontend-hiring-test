@@ -17,11 +17,6 @@
   align-items: center;
 }
 
-.buttons {
-  display: flex;
-  padding: 40px 0;
-}
-
 .calls {
   position: relative;
   display: flex;
