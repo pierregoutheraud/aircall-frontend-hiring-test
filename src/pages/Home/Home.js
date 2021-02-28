@@ -1,5 +1,4 @@
-import React, { useState, useCallback } from "react";
-import { useParams, useHistory, useLocation } from "react-router-dom";
+import React, { useCallback } from "react";
 import Call from "../../components/Call/Call";
 import CallGroups from "../../components/CallGroups/CallGroups";
 import PaginationNav from "../../components/PaginationNav/PaginationNav";
@@ -8,11 +7,11 @@ import CallsActions from "../../components/CallsActions/CallsActions";
 import useCalls from "../../hooks/useCalls";
 import useCall from "../../hooks/useCall";
 import styles from "./Home.module.css";
+import useRouting, { PAGES } from "../../hooks/useRouting";
 
 export default function Home() {
-  const history = useHistory();
-  const location = useLocation();
-  const page = parseInt(useParams().page || 1);
+  const { params, goTo } = useRouting();
+  const page = parseInt(params.page || 1);
   const {
     calls,
     totalCount,
@@ -27,11 +26,11 @@ export default function Home() {
 
   function goToPage(newPage) {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    history.push(`/${Math.max(newPage, 1)}`);
+    goTo(PAGES.HOME, { page: Math.max(newPage, 1) });
   }
 
   const handleClickCall = useCallback(id => {
-    history.push({ pathname: `/call/${id}`, state: { from: location } });
+    goTo(PAGES.CALL, { id });
   }, []);
 
   const _calls = calls.map(call => {

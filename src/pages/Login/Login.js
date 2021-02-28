@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import {
   Box,
@@ -10,6 +9,7 @@ import {
   Button,
 } from "@aircall/tractor";
 import styles from "./Login.module.css";
+import useRouting from "../../hooks/useRouting";
 
 /*
 This is not a fancy login page (No error report, no loading etc.) but I did not want to spend too much time on this part of the app.
@@ -19,8 +19,7 @@ I am sure you have a better way to get the data from the form but I could not fi
 
 export default function Login() {
   const auth = useAuth();
-  let history = useHistory();
-  let location = useLocation();
+  const { location, history } = useRouting();
   let { from } = location.state || { from: { pathname: "/" } };
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

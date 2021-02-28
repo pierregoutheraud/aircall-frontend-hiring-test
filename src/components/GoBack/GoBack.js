@@ -1,16 +1,16 @@
 import React from "react";
 import cx from "classnames";
-import { useHistory, useLocation } from "react-router-dom";
 import { IconButton, ArrowSendOutlined } from "@aircall/tractor";
+import useRouting from "../../hooks/useRouting";
 import styles from "./GoBack.module.css";
 
-export default function GoBack({ className, fallback = "/" }) {
-  const history = useHistory();
-  let location = useLocation();
-  let { from } = location.state || { from: { pathname: "/" } };
+export default function GoBack({ className }) {
+  const { history, prevPath } = useRouting();
 
   function handleClick() {
-    history.push(from);
+    // Using prevPath instead of history.goBack to handle case
+    // where we just arrived on website so that we can fallback on home
+    history.push(prevPath);
   }
 
   return (
