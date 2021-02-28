@@ -4,16 +4,15 @@ import Call from "../../components/Call/Call";
 import CallGroups from "../../components/CallGroups/CallGroups";
 import PaginationNav from "../../components/PaginationNav/PaginationNav";
 import Loading from "../../components/Loading/Loading";
+import CallsActions from "../../components/CallsActions/CallsActions";
 import useCalls from "../../hooks/useCalls";
 import useCall from "../../hooks/useCall";
 import styles from "./Home.module.css";
-import CallsActions from "../../components/CallsActions/CallsActions";
 
 export default function Home() {
   const history = useHistory();
   const location = useLocation();
   const page = parseInt(useParams().page || 1);
-  const [callsIdsChecked, setCallsIdsChecked] = useState([]);
   const {
     calls,
     totalCount,
@@ -21,6 +20,8 @@ export default function Home() {
     loading,
     archiveCalls,
     unarchiveCalls,
+    callsIdsChecked,
+    checkCall,
   } = useCalls(page);
   const { toggleIsArchived } = useCall();
 
@@ -33,18 +34,6 @@ export default function Home() {
     history.push({ pathname: `/call/${id}`, state: { from: location } });
   }, []);
 
-  // Since Call component is wrapped around React.memo, I memoized this function
-  // so that Call components get the same reference and do not get re-rendered everytime
-  const handleCheck = useCallback((callId, checked) => {
-    if (checked) {
-      setCallsIdsChecked(callsIdsChecked => [...callsIdsChecked, callId]);
-    } else {
-      setCallsIdsChecked(callsIdsChecked =>
-        callsIdsChecked.filter(id => id !== callId)
-      );
-    }
-  }, []);
-
   const _calls = calls.map(call => {
     return (
       <Call
@@ -53,7 +42,7 @@ export default function Home() {
         hasCheckbox
         isClickable
         onChangeArchived={toggleIsArchived}
-        onCheck={handleCheck}
+        onCheck={checkCall}
         onClick={handleClickCall}
       />
     );
