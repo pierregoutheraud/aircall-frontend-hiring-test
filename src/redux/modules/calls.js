@@ -142,7 +142,10 @@ export function selectCalls(state) {
   const {
     calls: { list, data, limit, offset },
   } = state;
-  return list.slice(offset, offset + limit).map(id => data[id]);
+  return list
+    .slice(offset, offset + limit)
+    .map(id => data[id])
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 }
 
 export const selectCall = callId => state => {

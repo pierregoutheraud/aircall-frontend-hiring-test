@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import debounce from "lodash.debounce";
 import { Spacer, Button, ArchiveOutlined } from "@aircall/tractor";
 import Call from "../../components/Call/Call";
+import CallGroups from "../../components/CallGroups/CallGroups";
 import PaginationNav from "../../components/PaginationNav/PaginationNav";
 import Loading from "../../components/Loading/Loading";
 import useCalls from "../../hooks/useCalls";
@@ -45,7 +45,6 @@ export default function Home() {
       <Call
         key={call.id}
         {...call}
-        className={styles.call}
         onChangeArchived={toggleIsArchived}
         onCheck={handleCheck}
         hasCheckbox
@@ -73,7 +72,9 @@ export default function Home() {
           <ArchiveOutlined /> Unarchive
         </Button>
       </Spacer>
-      <div className={styles.calls}>{_calls}</div>
+      <div className={styles.calls}>
+        <CallGroups>{_calls}</CallGroups>
+      </div>
       <PaginationNav
         className={styles.nav}
         page={page}
