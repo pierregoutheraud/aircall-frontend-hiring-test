@@ -52,7 +52,7 @@ describe("apiMiddleware", () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       type: type + "_REQUEST",
-      loading: true,
+      apiLoading: true,
     });
 
     expect(api.call).toHaveBeenCalledWith(method, endpoint, null);
@@ -64,7 +64,7 @@ describe("apiMiddleware", () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       type: type + "_SUCCESS",
-      loading: false,
+      apiLoading: false,
       hasNextPage: true,
       nodes: [],
       totalCount: 100,
@@ -89,12 +89,12 @@ describe("apiMiddleware", () => {
 
     expect(store.dispatch).toHaveBeenCalledWith({
       type: type + "_REQUEST",
-      loading: true,
+      apiLoading: true,
     });
 
     expect(store.dispatch).toHaveBeenCalledWith({
       type: type + "_FAILURE",
-      loading: false,
+      apiLoading: false,
     });
   });
 });

@@ -8,7 +8,7 @@ export default function apiMiddleware({ dispatch, getState }) {
       endpoint = null,
       body = null,
       method = "GET",
-      onSuccess = data => Promise.resolve(data),
+      onSuccess = data => data,
       ...restAction
     } = action;
 
@@ -24,7 +24,7 @@ export default function apiMiddleware({ dispatch, getState }) {
     const successType = type + "_SUCCESS";
     const failureType = type + "_FAILURE";
 
-    dispatch({ type: requestType, loading: true, ...restAction });
+    dispatch({ type: requestType, apiLoading: true, ...restAction });
 
     try {
       const data = await api.call(method, endpoint, body);
@@ -32,12 +32,12 @@ export default function apiMiddleware({ dispatch, getState }) {
 
       dispatch({
         type: successType,
-        loading: false,
+        apiLoading: false,
         ...restAction,
         ...payload,
       });
     } catch (e) {
-      dispatch({ type: failureType, loading: false, ...restAction });
+      dispatch({ type: failureType, apiLoading: false, ...restAction });
     }
   };
 }

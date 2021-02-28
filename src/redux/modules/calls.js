@@ -34,18 +34,19 @@ export const listenToCallsUpdates = () => (dispatch, getState) => {
 
   const channel = pusher.subscribe("private-aircall");
 
-  let calls = {};
+  const setCalls = debounce(calls => {
+    dispatch({ type: SET_CALLS, calls });
+    calls = null;
+  }, 1500);
+
+  let calls = null;
   function handleCallUpdate(call) {
     calls = {
-      ...calls,
+      ...(calls || {}),
       [call.id]: call,
     };
     setCalls(calls);
   }
-
-  const setCalls = debounce(calls => {
-    dispatch({ type: SET_CALLS, calls });
-  }, 1500);
 
   channel.bind("update-call", handleCallUpdate);
 };
@@ -172,11 +173,12 @@ export default function (state = initialState, action) {
     type,
     offset,
     totalCount,
-    loading,
+    apiLoading,
     callId,
     call,
     calls,
     nodes,
+    is_archived,
   } = action;
 
   switch (type) {
@@ -197,6 +199,7 @@ export default function (state = initialState, action) {
         },
       };
     case TOGGLE_IS_ARCHIVED + "_REQUEST":
+    case TOGGLE_IS_ARCHIVED + "_FAILURE":
       return {
         ...state,
         data: {
@@ -215,7 +218,7 @@ export default function (state = initialState, action) {
     case FETCH_CALLS_PAGE + "_REQUEST":
       return {
         ...state,
-        loading,
+        loading: apiLoading,
       };
     case FETCH_CALLS_PAGE + "_SUCCESS":
       const newList = [...state.list];
@@ -235,13 +238,13 @@ export default function (state = initialState, action) {
         data: newData,
         offset,
         totalCount,
-        loading,
+        loading: apiLoading,
       };
 
     case FETCH_CALLS_PAGE + "_FAILURE":
       return {
         ...state,
-        loading,
+        loading: apiLoading,
       };
     default:
       return state;
