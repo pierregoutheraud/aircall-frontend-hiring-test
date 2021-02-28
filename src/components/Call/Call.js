@@ -43,6 +43,8 @@ function Call({
   hasCheckbox = false,
   hasVia = false,
   hasNotes = false,
+  hasDate = false,
+  hasTime = true,
   onCheck = () => {},
   onChangeArchived = () => {},
 }) {
@@ -158,14 +160,23 @@ function Call({
             {toHHMMSS(duration / 1000)}
           </Typography>
         </div>
-        <div className={styles.column}>
-          <Typography className={styles.textSmall} variant="subheading1">
-            {createdAtDate.toLocaleTimeString()}
-          </Typography>
-          <Typography className={styles.textSmall} variant="subheading1">
-            {createdAtDate.toLocaleDateString()}
-          </Typography>
-        </div>
+        {hasTime || hasDate ? (
+          <div className={styles.column}>
+            {hasDate && (
+              <Typography className={styles.textSmall} variant="subheading1">
+                {createdAtDate.toLocaleDateString("en-US")}
+              </Typography>
+            )}
+            {hasTime && (
+              <Typography className={styles.textSmall} variant="subheading1">
+                {createdAtDate.toLocaleTimeString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </Typography>
+            )}
+          </div>
+        ) : null}
 
         <div className={styles.column}>
           <IconButton

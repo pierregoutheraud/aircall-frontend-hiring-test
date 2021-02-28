@@ -15,7 +15,14 @@ export default function CallPage() {
     <main className={styles.container}>
       <GoBack className={styles.goBack} />
       {call ? (
-        <Call {...call} onChangeArchived={toggleIsArchived} hasVia hasNotes />
+        <Call
+          {...call}
+          onChangeArchived={toggleIsArchived}
+          hasVia
+          hasNotes
+          hasTime
+          hasDate
+        />
       ) : (
         <Loading />
       )}
