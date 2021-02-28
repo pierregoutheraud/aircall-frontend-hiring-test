@@ -1,3 +1,4 @@
+import React from "react";
 import cx from "classnames";
 import { useHistory, useLocation } from "react-router-dom";
 import { IconButton, ArrowSendOutlined } from "@aircall/tractor";
@@ -9,7 +10,7 @@ export default function GoBack({ className, fallback = "/" }) {
   let { from } = location.state || { from: { pathname: "/" } };
 
   function handleClick() {
-    history.goBack();
+    history.push(from);
   }
 
   return (

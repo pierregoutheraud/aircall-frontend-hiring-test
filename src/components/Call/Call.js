@@ -12,7 +12,6 @@ import {
   CallOutlined,
   IconButton,
 } from "@aircall/tractor";
-import { useHistory } from "react-router-dom";
 import { toHHMMSS } from "../../lib/utils";
 import styles from "./Call.module.css";
 
@@ -47,13 +46,9 @@ function Call({
   hasTime = true,
   onCheck = () => {},
   onChangeArchived = () => {},
+  onClick = () => {},
 }) {
-  const history = useHistory();
   const createdAtDate = new Date(createdAt);
-
-  function handleClick() {
-    history.push(`/call/${id}`);
-  }
 
   function handleClickArchive(e) {
     e.stopPropagation();
@@ -126,7 +121,7 @@ function Call({
         isClickable && styles.isClickable,
         className
       )}
-      onClick={isClickable ? handleClick : undefined}
+      onClick={isClickable ? () => onClick(id) : undefined}
     >
       <div className={styles.columns}>
         {hasCheckbox && (

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { Spacer, Button, ArchiveOutlined } from "@aircall/tractor";
 import Call from "../../components/Call/Call";
 import CallGroups from "../../components/CallGroups/CallGroups";
@@ -11,6 +11,7 @@ import styles from "./Home.module.css";
 
 export default function Home() {
   const history = useHistory();
+  const location = useLocation();
   const page = parseInt(useParams().page || 1);
   const [callsIdsChecked, setCallsIdsChecked] = useState([]);
   const {
@@ -27,6 +28,10 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
     history.push(`/${Math.max(newPage, 1)}`);
   }
+
+  const handleClickCall = useCallback(id => {
+    history.push({ pathname: `/call/${id}`, state: { from: location } });
+  }, []);
 
   // Since Call component is wrapped around React.memo, I memoized this function
   // so that Call components get the same reference and do not get re-rendered everytime
@@ -45,10 +50,11 @@ export default function Home() {
       <Call
         key={call.id}
         {...call}
-        onChangeArchived={toggleIsArchived}
-        onCheck={handleCheck}
         hasCheckbox
         isClickable
+        onChangeArchived={toggleIsArchived}
+        onCheck={handleCheck}
+        onClick={handleClickCall}
       />
     );
   });
