@@ -1,11 +1,6 @@
 import React from "react";
 import cx from "classnames";
-import {
-  Icon,
-  CallOutlined,
-  CallFilled,
-  RingingFilled,
-} from "@aircall/tractor";
+import { Icon, CallFilled } from "@aircall/tractor";
 import styles from "./Loading.module.css";
 
 export default function Loading({ className }) {

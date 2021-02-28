@@ -168,7 +168,7 @@ export const initialState = {
   loading: false,
 };
 
-export default function (state = initialState, action) {
+export default function calls(state = initialState, action) {
   const {
     type,
     offset,
@@ -178,7 +178,6 @@ export default function (state = initialState, action) {
     call,
     calls,
     nodes,
-    is_archived,
   } = action;
 
   switch (type) {

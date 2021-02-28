@@ -29,9 +29,12 @@ export default function Home() {
     goTo(PAGES.HOME, { page: Math.max(newPage, 1) });
   }
 
-  const handleClickCall = useCallback(id => {
-    goTo(PAGES.CALL, { id });
-  }, []);
+  const handleClickCall = useCallback(
+    id => {
+      goTo(PAGES.CALL, { id });
+    },
+    [goTo]
+  );
 
   const _calls = calls.map(call => {
     return (

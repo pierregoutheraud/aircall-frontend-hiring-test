@@ -91,7 +91,7 @@ const initialState = {
   expiredAt: null,
 };
 
-export default function (state = initialState, action) {
+export default function auth(state = initialState, action) {
   const { type, user, accessToken, expiredAt } = action;
   switch (type) {
     case LOGIN_SUCCESS:

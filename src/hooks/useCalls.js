@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   listenToCallsUpdates,
@@ -18,11 +18,11 @@ export default function useCalls(page = 1) {
 
   useEffect(() => {
     dispatch(listenToCallsUpdates());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(displayPageByNumber(page));
-  }, [page]);
+  }, [page, dispatch]);
 
   // I memoized this function so that component using it as a prop, get the same reference and do not get re-rendered everytime.
   // It is useful for Call component for example since it is using React.memo.

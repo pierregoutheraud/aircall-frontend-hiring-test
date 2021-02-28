@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   listenToCallsUpdates,
@@ -17,13 +17,13 @@ export default function useCall(callId = null) {
     if (callId && !call) {
       dispatch(fetchCall(callId));
     }
-  }, []);
+  }, [call, callId, dispatch]);
 
   return {
     call,
     toggleIsArchived: useCallback(
       callId => dispatch(toggleIsArchived(callId)),
-      []
+      [dispatch]
     ),
   };
 }
