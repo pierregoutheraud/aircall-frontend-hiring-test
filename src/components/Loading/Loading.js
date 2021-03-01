@@ -17,6 +17,7 @@ export default function Loading({ className }) {
           component={CallFilled}
           color="primary.base"
           size={40}
+          role="img"
         />
       </div>
     </div>
