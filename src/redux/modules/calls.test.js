@@ -87,7 +87,7 @@ describe("calls reducer", () => {
       nodes: [{ id: "id5" }, { id: "id6" }],
       offset: 4,
       totalCount: 100,
-      loading: false,
+      apiLoading: false,
     });
 
     expect(state1).toEqual({
@@ -109,7 +109,7 @@ describe("calls reducer", () => {
       nodes: [{ id: "id8" }, { id: "id9" }, { id: "id10" }],
       offset: 7,
       totalCount: 100,
-      loading: false,
+      apiLoading: false,
     });
 
     expect(state2).toEqual({
