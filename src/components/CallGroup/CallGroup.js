@@ -11,17 +11,21 @@ CallGroup.propTypes = {
   ]).isRequired,
 };
 
-export default function CallGroup({ label = null, children }) {
-  const _children = children.map(child => {
+export default function CallGroup({ label = null, children, ...rest }) {
+  const _children = React.Children.map(children, (child, i) => {
     return (
-      <div key={child.key} className={styles.child}>
+      <div
+        key={child.key || i}
+        className={styles.child}
+        role="listitem-wrapper"
+      >
         {child}
       </div>
     );
   });
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} {...rest}>
       {label && (
         <Typography variant="subheading2" mt="-5px" mb="15px">
           {label}
