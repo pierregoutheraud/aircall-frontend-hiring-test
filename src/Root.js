@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Tractor } from "@aircall/tractor";
 import store from "./redux/store";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import Home from "./pages/Home/Home";
-import Login from "./pages/Login/Login";
+import HomePage from "./pages/HomePage/HomePage";
+import LoginPage from "./pages/LoginPage/LoginPage";
 import CallPage from "./pages/CallPage/CallPage";
 
 export default function Root() {
@@ -15,13 +15,13 @@ export default function Root() {
         <Router>
           <Switch>
             <Route path="/login">
-              <Login />
+              <LoginPage />
             </Route>
             <PrivateRoute path="/call/:callId">
               <CallPage />
             </PrivateRoute>
             <PrivateRoute path="/:page?">
-              <Home />
+              <HomePage />
             </PrivateRoute>
           </Switch>
         </Router>

@@ -8,8 +8,8 @@ import {
   TextFieldInput,
   Button,
 } from "@aircall/tractor";
-import styles from "./Login.module.css";
 import useRouting from "../../hooks/useRouting";
+import styles from "./LoginPage.module.css";
 
 /*
 This is not a fancy login page (No error report, no loading etc.) but I did not want to spend too much time on this part of the app.

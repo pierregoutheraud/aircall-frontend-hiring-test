@@ -6,8 +6,8 @@ import Loading from "../../components/Loading/Loading";
 import Actions from "../../components/Actions/Actions";
 import useCalls from "../../hooks/useCalls";
 import useCall from "../../hooks/useCall";
-import styles from "./Home.module.css";
 import useRouting, { PAGES } from "../../hooks/useRouting";
+import styles from "./HomePage.module.css";
 
 export default function Home() {
   const { params, goTo } = useRouting();
