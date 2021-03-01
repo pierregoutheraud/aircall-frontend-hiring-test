@@ -3,7 +3,7 @@ import Call from "../../components/Call/Call";
 import CallGroups from "../../components/CallGroups/CallGroups";
 import PaginationNav from "../../components/PaginationNav/PaginationNav";
 import Loading from "../../components/Loading/Loading";
-import CallsActions from "../../components/CallsActions/CallsActions";
+import Actions from "../../components/Actions/Actions";
 import useCalls from "../../hooks/useCalls";
 import useCall from "../../hooks/useCall";
 import styles from "./Home.module.css";
@@ -54,23 +54,25 @@ export default function Home() {
     <main className={styles.container}>
       {loading ? <Loading className={styles.loading} /> : null}
 
-      <CallsActions
-        disabled={!callsIdsChecked.length}
-        onArchive={() => archiveCalls(callsIdsChecked)}
-        onUnarchive={() => unarchiveCalls(callsIdsChecked)}
-      />
-
       <div className={styles.calls}>
         <CallGroups>{_calls}</CallGroups>
       </div>
 
-      <PaginationNav
-        className={styles.nav}
-        page={page}
-        maxPage={Math.ceil(totalCount / limit)}
-        onPage={goToPage}
-        disabled={loading}
-      />
+      <footer className={styles.footer}>
+        <PaginationNav
+          page={page}
+          maxPage={Math.ceil(totalCount / limit)}
+          onPage={goToPage}
+          disabled={loading}
+        />
+
+        <Actions
+          className={styles.actions}
+          disabled={!callsIdsChecked.length}
+          onArchive={() => archiveCalls(callsIdsChecked)}
+          onUnarchive={() => unarchiveCalls(callsIdsChecked)}
+        />
+      </footer>
     </main>
   );
 }
