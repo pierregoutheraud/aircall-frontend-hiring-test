@@ -28,15 +28,15 @@ const CALL_TYPES = {
 };
 
 Call.propTypes = {
-  id: PropTypes.string,
-  duration: PropTypes.number,
-  is_archived: PropTypes.bool,
-  from: PropTypes.string,
-  to: PropTypes.string,
-  direction: PropTypes.string,
-  call_type: PropTypes.string,
+  id: PropTypes.string.isRequired,
+  duration: PropTypes.number.isRequired,
+  is_archived: PropTypes.bool.isRequired,
+  from: PropTypes.string.isRequired,
+  to: PropTypes.string.isRequired,
+  direction: PropTypes.string.isRequired,
+  call_type: PropTypes.string.isRequired,
+  created_at: PropTypes.string.isRequired,
   via: PropTypes.string,
-  created_at: PropTypes.string,
   notes: PropTypes.array,
   className: PropTypes.string,
   isClickable: PropTypes.bool,
@@ -56,11 +56,11 @@ function Call({
   is_archived: isArchived,
   from,
   to,
+  via = null,
   direction,
   call_type: callType,
-  via,
   created_at: createdAt,
-  notes,
+  notes = [],
   className,
   isClickable = false,
   hasCheckbox = false,
@@ -110,7 +110,7 @@ function Call({
 
     const _notes = notes.map(({ id, content }) => {
       return (
-        <div className={styles.note} key={id}>
+        <div className={styles.note} key={id} role="listitem" aria-label="note">
           <Typography className={cx(styles.textSmall)} variant="subheading1">
             {content}
           </Typography>
@@ -118,7 +118,11 @@ function Call({
       );
     });
 
-    return <div className={styles.notes}>{_notes}</div>;
+    return (
+      <div className={styles.notes} role="list">
+        {_notes}
+      </div>
+    );
   }
 
   function renderPhones() {
@@ -128,7 +132,12 @@ function Call({
       ...(hasVia ? [{ label: "Via", value: via }] : []),
     ].map(({ label, value }) => {
       return (
-        <div className={styles.phones} key={label}>
+        <div
+          className={styles.phones}
+          key={label}
+          role="listitem"
+          aria-label="phone number"
+        >
           <Typography className={styles.directionText} variant="displayS2">
             {label}
           </Typography>
@@ -151,6 +160,7 @@ function Call({
         {hasCheckbox && (
           <div className={styles.column}>
             <Checkbox
+              role="checkbox"
               onChange={checked => onCheck(id, checked)}
               onClick={e => e.stopPropagation()}
             />
@@ -162,15 +172,19 @@ function Call({
             component={getDirectionIcon()}
             color={callType === CALL_TYPES.MISSED ? "red.base" : "primary.base"}
             size={40}
+            role="img"
           />
           <Icon
             className={styles.direction}
             component={getTypeIcon()}
             color={callType === CALL_TYPES.MISSED ? "red.base" : "primary.base"}
             size={32}
+            role="img"
           />
         </div>
-        <div className={styles.column}>{renderPhones()}</div>
+        <div className={styles.column} role="list">
+          {renderPhones()}
+        </div>
         <div className={styles.column}>
           <Typography
             className={cx(styles.textSmall, styles.textBorder)}
@@ -203,6 +217,8 @@ function Call({
             size={32}
             component={ArchiveOutlined}
             color={isArchived ? "red.base" : "grey.light"}
+            role="button"
+            aria-label={isArchived ? "is archived" : "is not archived"}
           />
         </div>
       </div>
