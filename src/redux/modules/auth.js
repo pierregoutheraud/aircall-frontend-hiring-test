@@ -84,7 +84,7 @@ export const hasLoggedIn = (user, accessToken, expiredAt) => (
   return dispatch({ type: LOGIN_SUCCESS, user, accessToken, expiredAt });
 };
 
-const initialState = {
+export const initialState = {
   isAuthenticated: null,
   user: null,
   accessToken: null,
