@@ -25,6 +25,7 @@ export default function GoBack({ className }) {
         size={36}
         component={ArrowSendOutlined}
         color="grey.dark"
+        role="button"
       />
     </main>
   );
