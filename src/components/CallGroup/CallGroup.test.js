@@ -10,13 +10,13 @@ describe("CallGroup", () => {
 
     render(
       <CallGroup label={label}>
-        <div key="1" role="listitem">
+        <div key="1" role="listitem" aria-label="child">
           1
         </div>
-        <div key="2" role="listitem">
+        <div key="2" role="listitem" aria-label="child">
           2
         </div>
-        <div key="3" role="listitem">
+        <div key="3" role="listitem" aria-label="child">
           3
         </div>
       </CallGroup>
@@ -25,10 +25,12 @@ describe("CallGroup", () => {
     const title = screen.queryByText(label);
     expect(title).toBeTruthy();
 
-    const children = screen.queryAllByRole("listitem");
+    const children = screen.queryAllByRole("listitem", { name: "child" });
     expect(children.length).toEqual(3);
 
-    const childrenWrappers = screen.queryAllByRole("listitem-wrapper");
+    const childrenWrappers = screen.queryAllByRole("listitem", {
+      name: "child wrapper",
+    });
     expect(childrenWrappers.length).toEqual(3);
   });
 });

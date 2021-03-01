@@ -17,7 +17,8 @@ export default function CallGroup({ label = null, children, ...rest }) {
       <div
         key={child.key || i}
         className={styles.child}
-        role="listitem-wrapper"
+        role="listitem"
+        aria-label="child wrapper"
       >
         {child}
       </div>
