@@ -89,13 +89,13 @@ export const displayPageByNumber = (page = 1) => (dispatch, getState) => {
 
 export const displayPageByOffset = newOffset => async (dispatch, getState) => {
   const {
-    calls: { list, limit },
+    calls: { list, limit, totalCount },
   } = getState();
 
   const pageAlreadyFetched = partOfArrayNotUndefined(
     list,
     newOffset,
-    newOffset + limit
+    Math.min(totalCount - 1, newOffset + limit)
   );
 
   if (!pageAlreadyFetched) {
