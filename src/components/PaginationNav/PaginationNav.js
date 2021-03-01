@@ -55,51 +55,13 @@ export default function PaginationNav({
           variant={isCurrent ? "primary" : "darkGhost"}
           onClick={isCurrent ? () => {} : () => onPage(_page)}
           width="50px"
+          role="button"
+          aria-label={isCurrent ? "current page" : "page button"}
         >
           {_page}
         </Button>
       );
     });
-    /*
-      .reduce((acc, curr, i, arr) => {
-        if (i === 0 && page > 3) {
-          acc = [
-            <Button
-              key={1}
-              mode="outline"
-              size="small"
-              variant="darkGhost"
-              onClick={() => onPage(1)}
-              width="50px"
-            >
-              {1}
-            </Button>,
-            <p>...</p>,
-          ];
-        }
-
-        acc.push(curr);
-
-        if (i === arr.length - 1 && page < maxPage - 2) {
-          acc = [
-            ...acc,
-            <p>...</p>,
-            <Button
-              key={maxPage}
-              mode="outline"
-              size="small"
-              variant="darkGhost"
-              onClick={() => onPage(maxPage)}
-              width="50px"
-            >
-              {maxPage}
-            </Button>,
-          ];
-        }
-
-        return acc;
-      }, []);
-      */
 
     return buttons;
   }
@@ -118,6 +80,8 @@ export default function PaginationNav({
         component={ArrowSendOutlined}
         color={hasPrevPage ? colorActive : colorNotActive}
         disabled={disabled || !hasPrevPage}
+        role="button"
+        aria-label="previous page"
       />
       {renderButtons()}
       <IconButton
@@ -127,6 +91,8 @@ export default function PaginationNav({
         component={ArrowSendOutlined}
         color={hasNextPage ? colorActive : colorNotActive}
         disabled={disabled || !hasNextPage}
+        role="button"
+        aria-label="next page"
       />
     </Spacer>
   );
