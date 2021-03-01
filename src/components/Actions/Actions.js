@@ -19,10 +19,21 @@ export default function Actions({
 }) {
   return (
     <Spacer className={cx(styles.buttons, className)} space="s">
-      <Button disabled={disabled} variant="destructive" onClick={onArchive}>
+      <Button
+        disabled={disabled}
+        variant="destructive"
+        onClick={onArchive}
+        role="button"
+        aria-label="archive"
+      >
         <ArchiveOutlined /> Archive
       </Button>
-      <Button disabled={disabled} onClick={onUnarchive}>
+      <Button
+        disabled={disabled}
+        onClick={onUnarchive}
+        role="button"
+        aria-label="unarchive"
+      >
         <ArchiveOutlined /> Unarchive
       </Button>
     </Spacer>
