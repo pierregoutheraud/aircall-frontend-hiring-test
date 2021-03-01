@@ -1,8 +1,13 @@
 import React from "react";
+import PropTypes from "prop-types";
 import cx from "classnames";
 import { IconButton, ArrowSendOutlined } from "@aircall/tractor";
 import useRouting from "../../hooks/useRouting";
 import styles from "./GoBack.module.css";
+
+GoBack.propTypes = {
+  className: PropTypes.string,
+};
 
 export default function GoBack({ className }) {
   const { history, prevPath } = useRouting();

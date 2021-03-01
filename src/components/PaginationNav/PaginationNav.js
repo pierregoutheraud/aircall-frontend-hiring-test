@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import cx from "classnames";
 import {
   IconButton,
@@ -7,6 +8,14 @@ import {
   Button,
 } from "@aircall/tractor";
 import styles from "./PaginationNav.module.css";
+
+PaginationNav.propTypes = {
+  className: PropTypes.string,
+  page: PropTypes.number,
+  maxPage: PropTypes.number,
+  disabled: PropTypes.bool,
+  onPage: PropTypes.func,
+};
 
 export default function PaginationNav({
   className = undefined,

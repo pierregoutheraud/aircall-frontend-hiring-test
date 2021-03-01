@@ -1,7 +1,12 @@
 import React from "react";
+import PropTypes from "prop-types";
 import cx from "classnames";
 import { Icon, CallFilled } from "@aircall/tractor";
 import styles from "./Loading.module.css";
+
+Loading.propTypes = {
+  className: PropTypes.string,
+};
 
 export default function Loading({ className }) {
   return (

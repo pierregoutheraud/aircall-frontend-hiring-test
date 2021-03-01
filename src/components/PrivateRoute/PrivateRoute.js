@@ -1,6 +1,14 @@
 import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 import { Route, Redirect } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+
+PrivateRoute.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+};
 
 export default function PrivateRoute({ children, ...rest }) {
   let { isAuthenticated, checkAuth } = useAuth();

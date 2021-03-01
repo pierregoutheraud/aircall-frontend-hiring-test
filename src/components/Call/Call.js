@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import PropTypes from "prop-types";
 import cx from "classnames";
 import {
   Icon,
@@ -24,6 +25,29 @@ const CALL_TYPES = {
   MISSED: "missed",
   ANSWERED: "answered",
   VOICEMAIL: "voicemail",
+};
+
+Call.propTypes = {
+  id: PropTypes.string,
+  duration: PropTypes.number,
+  is_archived: PropTypes.bool,
+  from: PropTypes.string,
+  to: PropTypes.string,
+  direction: PropTypes.string,
+  call_type: PropTypes.string,
+  via: PropTypes.string,
+  created_at: PropTypes.string,
+  notes: PropTypes.array,
+  className: PropTypes.string,
+  isClickable: PropTypes.bool,
+  hasCheckbox: PropTypes.bool,
+  hasVia: PropTypes.bool,
+  hasNotes: PropTypes.bool,
+  hasDate: PropTypes.bool,
+  hasTime: PropTypes.bool,
+  onCheck: PropTypes.func,
+  onChangeArchived: PropTypes.func,
+  onClick: PropTypes.func,
 };
 
 function Call({
